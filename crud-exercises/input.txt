@@ -1,0 +1,4 @@
+This is a text file 
+
+Input text file that is going to be used as the first example.
+Hoolay! here we go.
