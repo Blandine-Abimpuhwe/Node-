@@ -85,7 +85,7 @@ try{
 })
 
 
-//PUT by id
+//PUT request
 
 app.put('/items/:id', async (req,res)=>{
     const {id}= req.params
@@ -113,6 +113,27 @@ app.put('/items/:id', async (req,res)=>{
         return res.status(500).json({error: error.message})
     }
   
+})
+
+//DELETE request
+app.delete('/items/:id',async (req,res)=>{
+
+    const {id}= req.params
+    // const {title,details}= req.body
+
+  try{  const deleteItem= await items.findByIdAndDelete(
+         id
+    
+        // {title,details},
+        // {new: true, runValidators: true}
+    )
+if (!deleteItem){
+    return res.status(400).json({message: 'could not delete item'})
+}
+return res.status(200).json({message:'successfully deleted'})
+}catch(error){
+return res.status(500).json({error:error.message})
+}
 })
 
 
