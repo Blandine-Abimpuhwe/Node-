@@ -32,11 +32,13 @@
 
 
 // const http= require('http')
+
+
 import http from 'http'
 import fs from 'fs'
 
 const server= http.createServer((req,res)=> {
-    if (req.method === 'GET'){
+    if (req.method === 'GET' && req.url=== '/'){
     
         fs.readFile('./input.txt','utf8',(error,data)=>{
             if(error){
@@ -50,7 +52,32 @@ const server= http.createServer((req,res)=> {
         
     })
        
-    }else{
+    }else if (req.method === 'POST' && req.url=== '/'){
+
+    let body= ''
+
+    req.on('data', (chunk)=>{//req.on() attaches an event listener to the incoming http  
+    body += chunk
+    })
+    req.on('end',()=>{
+        fs.writeFile('./output.txt', body, (error)=>{//we don't put data since we've body
+        if(error){
+            res.statusCode= 500
+            res.end('internal server error')
+            return
+        }
+        res.writeHead(201, {'content-type': 'text/plain'})
+        res.end('file written successfully')
+        })
+    })
+
+    req.on('error', (error)=>{
+    res.statusCode = 400
+    res.end('Bad request')
+    })
+    }
+    else{
+        res.statusCode= 404
         res.end ('The given request is not recognized')
     }
 })
@@ -59,3 +86,37 @@ server.listen(3000,()=>{
     console.log('server running on port 3000')
 })
 
+/* Using streams_ they break large datasets into small chunks rather than
+waiting for a whole large document to load.
+Here they are being used to see incase we had large files.
+*/
+
+import { createReadStream, createWriteStream } from 'fs'
+
+const readDoc= fs.createReadStream('./input.txt','utf8')
+
+readDoc.on('data', (chunk)=>{
+    console.log(`Received data length is ${chunk.length}`)
+})
+readDoc.on('end',()=>{
+    console.log('No more data is left to read')
+})
+
+readDoc.on('error', (error)=>{
+    console.log('Data is not read')
+})
+
+const writeText = fs.createWriteStream('./outputStream.txt','utf8')
+
+writeText.write('This is the first line in output. Hoolay! I am using streams')
+
+writeText.end()
+
+writeText.on('finish',()=>{
+    console.log('Writing was a success')
+})
+
+writeText.on('error',(error)=>{
+    console.log('Error occured, writing failed', error.message)
+})
+/* To combine readable streams to writable streams we use .pipe() */
