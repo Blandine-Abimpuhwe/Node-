@@ -61,7 +61,7 @@ res.status(500).json({error: error.message})
 
 
 
-//Get items by Id
+//GET items by Id
 app.get('/items/:id', async(req,res)=>{
     const {id}= req.params
 
@@ -86,7 +86,6 @@ try{
 
 
 //PUT request
-
 app.put('/items/:id', async (req,res)=>{
     const {id}= req.params
     const {title,details}= req.body
@@ -98,7 +97,8 @@ app.put('/items/:id', async (req,res)=>{
         const updatedItem= await items.findByIdAndUpdate(
              id, 
             { title, details }, 
-            { new: true, 
+            { 
+            returnDocument: 'after', 
               runValidators: true, 
               upsert: true //creates the item if it doesn't exist yet
                 }
@@ -119,14 +119,7 @@ app.put('/items/:id', async (req,res)=>{
 app.delete('/items/:id',async (req,res)=>{
 
     const {id}= req.params
-    // const {title,details}= req.body
-
-  try{  const deleteItem= await items.findByIdAndDelete(
-         id
-    
-        // {title,details},
-        // {new: true, runValidators: true}
-    )
+  try{  const deleteItem= await items.findByIdAndDelete(id)
 if (!deleteItem){
     return res.status(400).json({message: 'could not delete item'})
 }
@@ -136,7 +129,25 @@ return res.status(500).json({error:error.message})
 }
 })
 
+//POST request
+app.post('/items', async(req,res)=>{
 
+    try{
+     const {id}= req.params
+     const {title, details}= req.body
+
+     if (!title || !details) {
+            return res.status(400).json({ message: 'Title and details are required' });
+        }
+
+     const postItem= new items({title,details})
+     await postItem.save()
+     return res.status(201).json({message: 'Posting is a success'})
+    }catch(error){
+    console.error("server error:" , error)
+     return res.status(500).json({error: error.message})
+    }
+})
 
 app.listen(3000, ()=>{
     console.log('server running on port 3000')
