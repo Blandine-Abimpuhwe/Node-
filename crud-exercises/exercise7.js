@@ -33,29 +33,4 @@ writer.on('error', (error)=>{
  //CONNECT BOTH STREAMS
  reader.pipe(upperCaseTransformer).pipe(writer)
 
- /*
- const fs = require('fs');
-const { Transform } = require('stream');
-
-const reader = fs.createReadStream('./input.txt', 'utf8');
-const writer = fs.createWriteStream('./output2.txt');
-
-// Create the uppercase converter
-const upperCaseTransformer = new Transform({
-  transform(chunk, encoding, callback) {
-    callback(null, chunk.toString().toUpperCase());
-  }
-});
-
-// Handle errors individually on every stream
-reader.on('error', (err) => console.log('Reader error:', err.message));
-upperCaseTransformer.on('error', (err) => console.log('Transform error:', err.message));
-writer.on('error', (err) => console.log('Writer error:', err.message));
-
-// Handle the completion event on the writer
-writer.on('finish', () => console.log('The file has been read and written successfully.'));
-
-// CONNECT STREAMS THROUGH THE TRANSFORMER
-reader.pipe(upperCaseTransformer).pipe(writer);
-
- */
+ 
