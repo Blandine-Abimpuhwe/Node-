@@ -23,6 +23,9 @@ const app= express()
 app.use(express.json());
 
 
+let tasks= []
+let nextId =1
+
 app.get('/todo/:id',(req,res)=>{
 
     try{
@@ -43,12 +46,12 @@ app.get('/todo/:id',(req,res)=>{
     }
 })
 
-let tasks= []
-let nextId =1
+
 app.post('/todo',(req,res)=>{
   
     try{
       const {task} = req.body
+
       if (!task){
         return res.status(400).json({message: "task description is required"})
       }
@@ -65,11 +68,13 @@ app.post('/todo',(req,res)=>{
 
         // Return the created task with a 201 Created status code
         return res.status(201).json(newTask);
+        
     }catch(error){
 console.error('server error :', error)
 return res.status(500).json({error:"internal server error"})
     }
 })
+
 
 
 app.listen(3003, ()=>console.log('server running on port 3003'))

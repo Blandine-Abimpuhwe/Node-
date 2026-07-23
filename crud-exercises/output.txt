@@ -1,8 +1,0 @@
-This sentence shall go into output text file. No streams used 
-
-Steps for POST request in Postman
-1. choose method
-2. Put in the url (where the port is running)
-3. Go to headers ; fill in key and value (content-type: text/plain)
-4. Go to body-> raw-> text
-5. Write normal texts in the space and click send
